@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .box{
+            width: 800px;
+            height: 500px;
+            border: 1px solid #000;
+            margin: 10px;
+            overflow: hidden;
+        }
+        .drag-child{
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            margin: 200px;
+        }
+        .drag-child:hover{
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div class="box">
+        <div class="drag-child"></div>
+    </div>
+
+<script>
+    let drag = document.querySelector(".drag-child");
+    let box = document.querySelector(".box");
+
+    class Drag{
+      constructor (drag,parent){
+        this.clientX = "";
+        this.clientY = "";
+        this.offsetX = "";
+        this.offsetY = "";
+
+        this.isStart = false
+        this.drag = drag;
+        this.parent = parent;
+        this.init();
+      }
+
+      init(){
+        this.bindEvent();
+      }
+      bindEvent(){
+        this.mousedown();
+        this.mousemove();
+        this.mouseup();
+      }
+
+      mousedown(){
+        this.drag.onmousedown = (e) => {
+          this.isStart = true
+
+          this.clientX = e.clientX
+          this.clientY = e.clientY
+          this.offsetX = e.offsetX;
+          this.offsetY = e.offsetY;
+        }
+      }
+      mousemove(){
+        let me = this;
+        this.parent.addEventListener( "mousemove",function(e){
+          if(!me.isStart) return;
+
+          if(e.target.className === "drag-child"){
+            me.moveDrag(e.clientX - me.offsetX - this.offsetLeft, e.clientY -  me.offsetY- this.offsetTop)
+          }
+
+        })
+      }
+      mouseup(){
+        document.onmouseup = (e)=>{
+          this.off();
+        }
+      }
+
+      off(){
+        this.isStart = false
+      }
+
+      moveDrag(x,y){
+        this.drag.style.marginLeft = x + "px";
+        this.drag.style.marginTop = y + "px";
+      }
+    }
+
+    new Drag(drag,box)
+
+
+
+</script>
+</body>
+</html>
