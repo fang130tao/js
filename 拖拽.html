@@ -25,76 +25,65 @@
 <body>
 
 
-    <div class="box">
-        <div class="drag-child"></div>
-    </div>
+<div class="box">
+    <div class="drag-child"></div>
+</div>
 
 <script>
-    let drag = document.querySelector(".drag-child");
-    let box = document.querySelector(".box");
+  let drag = document.querySelector(".drag-child");
+  let box = document.querySelector(".box");
 
-    class Drag{
-      constructor (drag,parent){
-        this.clientX = "";
-        this.clientY = "";
-        this.offsetX = "";
-        this.offsetY = "";
 
-        this.isStart = false
-        this.drag = drag;
-        this.parent = parent;
-        this.init();
-      }
+  class Drag{
+    constructor (drag,parent){
+      this.clientX = "";
+      this.clientY = "";
+      this.offsetX = "";
+      this.offsetY = "";
 
-      init(){
-        this.bindEvent();
-      }
-      bindEvent(){
-        this.mousedown();
-        this.mousemove();
-        this.mouseup();
-      }
-
-      mousedown(){
-        this.drag.onmousedown = (e) => {
-          this.isStart = true
-
-          this.clientX = e.clientX
-          this.clientY = e.clientY
-          this.offsetX = e.offsetX;
-          this.offsetY = e.offsetY;
-        }
-      }
-      mousemove(){
-        let me = this;
-        this.parent.addEventListener( "mousemove",function(e){
-          if(!me.isStart) return;
-
-          if(e.target.className === "drag-child"){
-            me.moveDrag(e.clientX - me.offsetX - this.offsetLeft, e.clientY -  me.offsetY- this.offsetTop)
-          }
-
-        })
-      }
-      mouseup(){
-        document.onmouseup = (e)=>{
-          this.off();
-        }
-      }
-
-      off(){
-        this.isStart = false
-      }
-
-      moveDrag(x,y){
-        this.drag.style.marginLeft = x + "px";
-        this.drag.style.marginTop = y + "px";
-      }
+      this.drag = drag;
+      this.parent = parent;
+      this.init();
     }
 
-    new Drag(drag,box)
+    init(){
+      this.bindEvent();
+    }
+    bindEvent(){
+      this.mousedown();
+    }
 
+    mousedown(){
+      this.drag.onmousedown = (e) => {
+        this.clientX = e.clientX
+        this.clientY = e.clientY
+        this.offsetX = e.offsetX;
+        this.offsetY = e.offsetY;
 
+        this.mousemove();
+        this.mouseup()
+
+      }
+    }
+    mousemove(){
+      let me = this;
+
+      this.parent.onmousemove = function (e) {
+        me.moveDrag(e.clientX - me.offsetX - this.offsetLeft, e.clientY -  me.offsetY- this.offsetTop)
+      }
+    }
+    mouseup(){
+      document.onmouseup = (e)=>{
+        this.parent.onmousemove = null;
+      }
+    }
+    moveDrag(x,y){
+      this.drag.style.marginLeft = x + "px";
+      this.drag.style.marginTop = y + "px";
+    }
+  }
+
+  new Drag(drag,box)
 
 </script>
 </body>
